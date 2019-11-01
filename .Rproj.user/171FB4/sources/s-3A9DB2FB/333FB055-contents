@@ -1,0 +1,512 @@
+legend.position = "none",
+axis.title.y = element_blank(),
+axis.title.x = element_blank())
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none",
+axis.title.y = element_blank(),
+axis.title.x = element_blank())
+library(readr)
+#upload data
+predictionsData <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/predictions_c2t3_exc.csv")
+View(predictionsData)
+View(predictionsData)
+colnames(predictionsData)[1] <- 'ID'
+colnames(predictionsData)[3] <- 'Volume_predic'
+colnames(predictionsData)[3] <- 'Volume_predicted'
+library(readr)
+#upload data
+predictionsData <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/predictions_c2t3_exc.csv")
+View(predictionsData)
+View(predictionsData)
+colnames(predictionsData)[1] <- 'ID'
+#transformar em ID
+rownames(predictionsData) <- predictionsData$ID
+#transformar em ID
+rownames(predictionsData) <- predictionsData$ID
+View(predictionsData)
+#excluir coluna ID
+predictionsData <- predictionsData[,-1]
+knitr::opts_chunk$set(echo = TRUE)
+predictionsData
+install.packages("kableExtra")
+install.packages("knitr")
+knitr::opts_chunk$set(echo = FALSE)
+# create nice tables
+library(kableExtra)
+library(knitr)
+kable(predictionsData) %>%
+kable_styling()
+kable_styling(bootstrap_options = c("striped", "hover"))
+colnames(predictionsData)[1] <- 'ID'
+predictionsData <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/predictions_c2t3_exc.csv")
+colnames(predictionsData)[1] <- 'ID'
+rownames(predictionsData) <- predictionsData$ID
+predictionsData <- predictionsData[,-1]
+kable(predictionsData) %>%
+kable_styling(bootstrap_options = c("striped", "hover"))
+predictionsData <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/predictions_c2t3_exc.csv")
+rownames(predictionsData) <- predictionsData$ID
+predictionsData <- predictionsData[,-1]
+kable(predictionsData) %>%
+kable_styling(bootstrap_options = c("striped", "hover"))
+kable(predictionsData) %>%
+kable_styling(bootstrap_options = c("striped", "hover")) %>%
+row_spec(2:6, bold = T, color = "black", background = "green"))
+kable(predictionsData) %>%
+kable_styling(bootstrap_options = c("striped", "hover")) %>%
+row_spec(2:6, bold = T, color = "black", background = "green")
+knitr::opts_chunk$set(echo = FALSE)
+library(kableExtra)
+library(knitr)
+library(caret)
+library(ggplot2)
+library(lattice)
+library(corrplot)
+library(dplyr)
+library(kableExtra)
+library(knitr)
+library(caret)
+library(ggplot2)
+library(corrplot)
+library(dplyr)
+predictionsData <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/Data/predictions_c2t3_exc.csv")
+predictionsData <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/Data/Predictions/predictions_c2t3_exc.csv")
+rownames(predictionsData) <- predictionsData$ID
+predictionsData <- predictionsData[,-1]
+kable(predictionsData) %>%
+kable_styling(bootstrap_options = c("striped", "hover")) %>%
+row_spec(1:5, bold = T, color = "black", background = "palegreen")
+existing_products <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/Data/Raw/existingproductattributes2017.csv")
+newDataFrame <- dummyVars(" ~ .", data = existing_products)
+cleanData <- data.frame(predict(newDataFrame, newdata = existing_products))
+colnames(cleanData)[5] <- 'Laptop'
+colnames(cleanData)[6] <- 'Netbook'
+colnames(cleanData)[7] <- 'PC'
+colnames(cleanData)[10] <- 'Smartphone'
+rownames(cleanData) <- cleanData$ProductNum
+cleanData <- cleanData[,-c(1, 2, 3, 4, 8, 9, 11, 12, 13, 23)]
+corrData <- cor(cleanData)
+corrplot(corrData)
+View(existing_products)
+#upload arquivo
+existing_products <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/Data/Raw/existingproductattributes2017.csv")
+#separar os atributos nominais em diferentes colunas. Se colocar ., a função
+#vai escolher todos os atributos nominais. Se quiser espeficificar qual quer
+#transformar, só escrever o nome no atributo na fórmula. Nesse caso estamos separando
+#em diferente colunas, porque só queremos olhar para quatro dos 13 tipos de produtos
+newDataFrame <- dummyVars(" ~ .", data = existing_products)
+cleanData <- data.frame(predict(newDataFrame, newdata = existing_products))
+#mudar nomes
+colnames(cleanData)[5] <- 'Laptop'
+colnames(cleanData)[6] <- 'Netbook'
+colnames(cleanData)[7] <- 'PC'
+colnames(cleanData)[10] <- 'Smartphone'
+#Tranformar o número do produto em ID
+rownames(cleanData) <- cleanData$ProductNum
+#excluir coluna BestSellersRank (23), porque tem 15 missing values. Exclui também
+#todas as colunas com os tipos de produtos que não interessam. E tipo de produto
+#e número do produto
+cleanData <- cleanData[,-c(1, 2, 3, 4, 8, 9, 11, 12, 13, 23)]
+#excluir mais colunas depois do correlationmatrix
+cleanData <- cleanData[,-c(5, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18)]
+#boxplot as colunas
+boxplot(cleanData$x4StarReviews)
+boxplot(cleanData$x4StarReviews)$out
+#boxplot as colunas
+boxplot(cleanData$x4StarReviews)
+boxplot(cleanData$x4StarReviews)$out
+boxplot(cleanData$x2StarReviews)
+boxplot(cleanData$x2StarReviews)$out
+boxplot(cleanData$PositiveServiceReview)
+boxplot(cleanData$PositiveServiceReview)$out
+#upload arquivo
+existing_products <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/Data/Raw/existingproductattributes2017.csv")
+#separar os atributos nominais em diferentes colunas. Se colocar ., a função
+#vai escolher todos os atributos nominais. Se quiser espeficificar qual quer
+#transformar, só escrever o nome no atributo na fórmula. Nesse caso estamos separando
+#em diferente colunas, porque só queremos olhar para quatro dos 13 tipos de produtos
+newDataFrame <- dummyVars(" ~ .", data = existing_products)
+cleanData <- data.frame(predict(newDataFrame, newdata = existing_products))
+#mudar nomes
+colnames(cleanData)[5] <- 'Laptop'
+colnames(cleanData)[6] <- 'Netbook'
+colnames(cleanData)[7] <- 'PC'
+colnames(cleanData)[10] <- 'Smartphone'
+#Tranformar o número do produto em ID
+rownames(cleanData) <- cleanData$ProductNum
+#excluir coluna BestSellersRank (23), porque tem 15 missing values. Exclui também
+#todas as colunas com os tipos de produtos que não interessam. E tipo de produto
+#e número do produto
+cleanData <- cleanData[,-c(1, 2, 3, 4, 8, 9, 11, 12, 13, 23)]
+#correlation matrix
+corrData <- cor(cleanData)
+#plotar o correlation matrix
+corrplot(corrData)
+#excluir mais colunas depois do correlationmatrix
+cleanData <- cleanData[,-c(5, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18)]
+#boxplot as colunas
+boxplot(cleanData$x4StarReviews)
+boxplot(cleanData$x4StarReviews)$out
+boxplot(cleanData$x2StarReviews)
+boxplot(cleanData$PositiveServiceReview)
+boxplot(cleanData$PositiveServiceReview)$out
+boxplot(cleanData$Volume)
+boxplot(cleanData$Volume)$out
+#linkar com o predictions
+source("Scripts/Predictions.R")
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+))
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred"))
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none"
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none")
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none"))
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none")
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none",
+axis.title.x = element_blank())
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none",
+axis.title.y = element_blank())
+source("Scripts/Predictions.R")
+newProducts <- newProducts[,-8]
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none",
+axis.title.y = element_blank())
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none",
+axis.title.y = element_blank())
+cleanData <- cleanData[,-c(5, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18)]
+readyData <- cleanData[-c(34, 35, 36, 37, 38, 39, 40, 41), ]
+readyData$product_id <- rownames(readyData)
+readyData <- filter(.data = readyData, !(product_id %in% c(129, 132, 166)))
+readyData <- filter(.data = readyData, !(product_id %in% c(118, 123, 148, 150, 198)))
+readyData <- readyData[, -9]
+set.seed(123)
+inTrain <- createDataPartition(y = readyData$Volume, p = .75, list = FALSE)
+cleanData <- cleanData[,-c(5, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18)]
+readyData <- cleanData[-c(34, 35, 36, 37, 38, 39, 40, 41), ]
+readyData$product_id <- rownames(readyData)
+readyData <- filter(.data = readyData, !(product_id %in% c(129, 132, 166)))
+readyData <- filter(.data = readyData, !(product_id %in% c(118, 123, 148, 150, 198)))
+readyData <- readyData[, -9]
+set.seed(123)
+inTrain <- createDataPartition(y = readyData$Volume, p = .75, list = FALSE)
+readyData$Volume
+readyData$Volume
+View(readyData)
+#upload arquivo
+existing_products <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/Data/Raw/existingproductattributes2017.csv")
+#separar os atributos nominais em diferentes colunas. Se colocar ., a função
+#vai escolher todos os atributos nominais. Se quiser espeficificar qual quer
+#transformar, só escrever o nome no atributo na fórmula. Nesse caso estamos separando
+#em diferente colunas, porque só queremos olhar para quatro dos 13 tipos de produtos
+newDataFrame <- dummyVars(" ~ .", data = existing_products)
+cleanData <- data.frame(predict(newDataFrame, newdata = existing_products))
+#mudar nomes
+colnames(cleanData)[5] <- 'Laptop'
+colnames(cleanData)[6] <- 'Netbook'
+colnames(cleanData)[7] <- 'PC'
+colnames(cleanData)[10] <- 'Smartphone'
+#Tranformar o número do produto em ID
+rownames(cleanData) <- cleanData$ProductNum
+#excluir coluna BestSellersRank (23), porque tem 15 missing values. Exclui também
+#todas as colunas com os tipos de produtos que não interessam. E tipo de produto
+#e número do produto
+cleanData <- cleanData[,-c(1, 2, 3, 4, 8, 9, 11, 12, 13, 23)]
+View(cleanData)
+#correlation matrix
+corrData <- cor(cleanData)
+#plotar o correlation matrix
+corrplot(corrData)
+#excluir mais colunas depois do correlationmatrix
+cleanData <- cleanData[,-c(5, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18)]
+View(cleanData)
+#encontrei um cluster de 8 rows repetidos que não fazem sentido.
+#vou excluir por ID e colocar do dataset readyData
+readyData <- cleanData[-c(34, 35, 36, 37, 38, 39, 40, 41), ]
+View(readyData)
+#criar coluna de ID, porque eu exclui antes. É preciso para filtrar
+readyData$product_id <- rownames(readyData)
+#quero excluir as linhas eu dizem que o volume é zero, pois tem erro
+#como é possível ter avaliação, se o volume é zero?
+#usando o pacote ‘dplyr’ para filtrar as linhas, mas usando coluna
+readyData <- filter(.data = readyData, !(product_id %in% c(129, 132, 166)))
+View(readyData)
+#excluir outliers por ID
+readyData <- filter(.data = readyData, !(product_id %in% c(118, 123, 148, 150, 198)))
+#excluir coluna product_id
+readyData <- readyData[, -9]
+View(readyData)
+#excluir coluna product_id
+readyData <- readyData[, -9]
+View(readyData)
+existing_products <- read.csv("C:/Users/letic/Documents/UbiqumR/Course2_task3/Data/Raw/existingproductattributes2017.csv")
+newDataFrame <- dummyVars(" ~ .", data = existing_products)
+cleanData <- data.frame(predict(newDataFrame, newdata = existing_products))
+colnames(cleanData)[5] <- 'Laptop'
+colnames(cleanData)[6] <- 'Netbook'
+colnames(cleanData)[7] <- 'PC'
+colnames(cleanData)[10] <- 'Smartphone'
+rownames(cleanData) <- cleanData$ProductNum
+cleanData <- cleanData[,-c(1, 2, 3, 4, 8, 9, 11, 12, 13, 23)]
+corrData <- cor(cleanData)
+corrplot(corrData)
+cleanData <- cleanData[,-c(5, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18)]
+readyData <- cleanData[-c(34, 35, 36, 37, 38, 39, 40, 41), ]
+readyData$product_id <- rownames(readyData)
+readyData <- filter(.data = readyData, !(product_id %in% c(129, 132, 166)))
+readyData <- filter(.data = readyData, !(product_id %in% c(118, 123, 148, 150, 198)))
+readyData <- readyData[, -9]
+set.seed(123)
+inTrain <- createDataPartition(y = readyData$Volume, p = .75, list = FALSE)
+training <- readyData[ inTrain,]
+testing <- readyData[-inTrain,]
+crossV <- trainControl(method = 'repeatedcv', repeats = 10)
+set.seed(123)
+RFmodel <- train(Volume ~ .,
+data = readyData,
+method = 'rf',
+preProc = c('center','scale'),
+tuneLength = 2,
+trControl = crossV)
+RFmodel_pred_test <- predict(RFmodel, testing)
+newData <- read.csv("C:/Users/letic/Desktop/newproductattributes2017.csv")
+newDFP <- dummyVars(" ~ .", data = newData)
+newProducts <- data.frame(predict(newDFP, newdata = newData))
+newProducts <- newProducts[,-c(1, 2, 3, 4, 8, 9, 11, 12, 14, 15, 17, 19, 21, 22, 23, 24, 25, 26, 27, 29)]
+colnames(newProducts)[1] <- 'Laptop'
+colnames(newProducts)[2] <- 'Netbook'
+colnames(newProducts)[3] <- 'PC'
+colnames(newProducts)[4] <- 'Smartphone'
+rownames(newProducts) <- newProducts$ProductNum
+newProducts <- newProducts[,-5]
+newProducts$VolumeRF <- predict(RFmodel, newProducts)
+newProducts <- newProducts[,-8]
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none",
+axis.title.y = element_blank())
+#linkar com o predictions
+source("Scripts/Predictions.R")
+#tirar o Profitmargin para acrescentar depois
+newProducts <- newProducts[,-8]
+#barras para mostrar a importancia do tipo de produto
+newProducts %>%
+mutate(product_type = newData$ProductType,
+profit_m = newData$ProfitMargin,
+profit = VolumeRF*profit_m) %>%
+group_by(product_type) %>%
+summarise(mean_profit = mean(profit),
+count = n()) %>%
+ggplot() +
+geom_col(
+aes(x = reorder(product_type, mean_profit),
+y = mean_profit,
+fill = (product_type %in% c("PC", "Netbook", "Laptop","Smartphone"))
+)) +
+coord_flip() +
+scale_y_continuous(labels = scales::dollar) +
+scale_fill_manual(values = c("grey","darkred")) +
+theme_minimal() +
+theme(
+legend.position = "none",
+axis.title.y = element_blank())

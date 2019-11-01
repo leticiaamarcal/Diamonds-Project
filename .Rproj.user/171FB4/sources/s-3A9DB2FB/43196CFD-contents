@@ -1,0 +1,226 @@
+# Libraries ----
+if (require(tidyverse) == FALSE) {
+  install.packages('pacman')
+}
+pacman::p_load(tidyverse)
+
+#libraries
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(devtools)
+library(scales)
+library(grid)
+library(caret)
+library(lattice)
+library(corrplot)
+
+# import data 
+diamantes <- readRDS("train.rds")
+validation <- readRDS("validation_NOprice.rds")
+
+# Dataset information ----
+?diamonds
+
+# Data insights ----
+
+# The diamonds with a bad cut are in average more expensive
+diamantes %>% 
+  ggplot(aes(cut, price)) + 
+    geom_boxplot()
+ 
+  # cut x carat
+diamantes %>% 
+   ggplot(aes(cut, carat)) + 
+   geom_boxplot()
+
+# The diamonds with a bad color are also more expensive
+diamantes %>% 
+  ggplot(aes(color, price)) + 
+    geom_boxplot()
+
+     #color x weight (carat)
+diamantes %>% 
+  ggplot(aes(color, carat)) + 
+  geom_boxplot()
+
+# And the diamonds with a bad clarity have a higer price
+diamantes %>% 
+  ggplot(aes(clarity, price)) +
+    geom_boxplot()
+
+    #clarity x weight
+diamantes %>% 
+    ggplot(aes(clarity, carat)) + 
+     geom_boxplot()
+
+# The diamonds with a bad cut are in average more expensive
+diamantes %>% 
+  ggplot(aes(cut, price)) + 
+  geom_boxplot()
+
+    #cut x weight
+diamantes %>% 
+        ggplot(aes(cut, carat)) + 
+        geom_boxplot()
+
+#barchart counts 
+    ggplot(data = diamantes) +
+      geom_bar(mapping = aes(x = cut))
+    
+#distribution carat x price
+    diamantes %>% 
+      ggplot(aes(carat, price)) + 
+      geom_point()
+
+#distribution x and price   
+    diamantes %>% 
+      ggplot(aes(x, price)) + 
+      geom_point()    
+
+    diamantes %>% 
+      ggplot(aes(z, price)) + 
+      geom_point() 
+    
+    diamantes %>% 
+      ggplot(aes(y, price)) + 
+      geom_point() 
+    
+# Your task ----
+
+# Why the diamonds that have a fair cut, bad color and a bad clarity are, in median, more expensive? We would like to receive a model to predict their price and to know which ones are the most relevant features to do that. 
+  #Because they are heavier. 
+
+#checking variable
+str(diamantes) 
+    
+#check NA's = no NA's 
+summary(is.na(diamantes))
+    
+#dummy and transforming in a dataframe
+diamondsDF <- dummyVars(" ~ .", data = diamantes)
+diamondsData <- data.frame(predict(diamondsDF, newdata = diamantes))
+
+#reorder columns
+diamondsData <- diamondsData[, c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,26,27,28,25)]
+    
+#correlation matrix
+corMatrix <- cor(diamondsData)
+
+#plotar o correlation matrix
+corrplot(corMatrix)
+
+#correlation price and carat
+#0.921373469
+
+#plots to see relationship variables x price (after dummy)
+diamondsData %>% 
+  ggplot(aes(cutIdeal, price)) + 
+  geom_point()
+
+                                                            
+#set seed
+set.seed(123)
+
+#split the data
+inTrain <- createDataPartition(y = diamondsData$price, p = .75, list = FALSE)
+
+#creating train and test
+training <- diamondsData[ inTrain,]
+testing  <- diamondsData[-inTrain,]
+
+#size
+nrow(training)
+nrow(testing)
+
+#cross validation
+crossV <- trainControl(method = "repeatedcv", repeats = 10)
+
+#creating myt
+mtry <- expand.grid(mtry = 1)
+
+diamondsData$col
+
+#creat model Random Forest
+modelRF <- train(price ~ carat + cutIdeal + cutPremium + colorD + colorE + colorI + claritySI2 + clarityVVS1,
+                      data = diamondsData,
+                      method = "rf",
+                      preProc = c("center", "scale"),
+                      tuneLength = mtry,
+                      trControl = crossV)
+
+#métrica
+modelRF
+#RMSE      Rsquared   MAE     
+#1803.983  0.8793241  1212.386
+
+#varImp
+randomForest::importance(modelRF$finalModel)
+randomForest::varImpPlot(modelRF$finalModel)
+
+#predictions
+predictionsRF <- predict(modelRF, testing)
+
+#postResample
+postResample(testing$price, pred = predictionsRF)
+
+#métricas
+#RMSE            Rsquared         MAE 
+#1784.8297109    0.8796033        1206.7576120 
+
+###---
+
+#SVM Radial Model 
+modelSVMra <- train(price ~ x + colorE + colorI,
+                 data = diamondsData,
+                 method = "svmRadial",
+                 preProc = c("center", "scale"),
+                 tuneLength = 2,
+                 trControl = crossV)
+
+#metrics
+modelSVMra
+
+#predictions
+predictionSVMra <- predict(modelSVMra, testing)
+                          
+#postResample
+postResample(testing$price, pred = predictionSVMra)
+
+
+save(modelSVMra.rda)
+
+##---
+
+#Linear Model
+#SVM Radial Model 
+modelLM <- train(price ~ x + colorE + colorI,
+                    data = diamondsData,
+                    method = "lm",
+                    preProc = c("center", "scale"),
+                    tuneLength = 2,
+                    trControl = crossV)
+
+#metrics
+modelLM
+#RMSE      Rsquared   MAE     
+#1881.926  0.7810116  1381.734
+
+
+#predictions
+predictionLM <- predict(modelLM, testing)
+
+#postResample
+postResample(testing$price, pred = predictionLM)
+
+#RMSE     Rsquared          MAE 
+#1901.7361609    0.7773209 1383.0252979 
+
+
+#predict/validation
+predictionVali <- predict(modelLM, validation3)
+
+validation2 <- dummyVars(" ~ .", data = validation)
+validation3 <- data.frame(predict(validation2, newdata = validation))
+
+predictionVali

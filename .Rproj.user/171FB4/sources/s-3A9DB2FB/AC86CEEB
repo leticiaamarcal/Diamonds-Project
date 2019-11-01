@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1572614167724.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "AC86CEEB",
+    "lastKnownWriteTime" : 1287506517448,
+    "last_content_update" : 1572614167724,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "77AEDE3A",
+        "caption" : "validation3",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=validation3&cache_key=77AEDE3A",
+        "displayedObservations" : 17980,
+        "environment" : "",
+        "expression" : "validation3",
+        "object" : "validation3",
+        "preview" : 0,
+        "totalObservations" : 17980,
+        "variables" : 27
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
